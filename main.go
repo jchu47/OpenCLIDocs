@@ -29,14 +29,23 @@ func main(){
 			// if err != nil {
 			// log.Printf("Failed to read file: %v", err)
 			// }
-		instructions := "Please generate a short 5 sentance paragraph about dinorsaurs"
-		requestBody, err := json.Marshal(map[string]string{
-				"prompt": instructions,
+		requestBody, err := json.Marshal(map[string]interface{}{
+				"model": "gpt-3.5-turbo",
+				"messages": []map[string]string {
+					{
+						"role": "system",
+						"content": "You are a helpful assistant.",
+					},
+					{
+						"role": "user",
+						"content": "Please generate a short 5 sentance paragraph about dinorsaurs",
+					},
+				},
 			})
 			if err != nil {
 			log.Fatalf("Failed to read json Marshil: %v", err)
 			}
-			api_key := os.Getenv("API_KEY")
+			api_key := "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"
 			req, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(requestBody))
 			if err != nil{
 			log.Fatalf("Failed to create requestt: %v", err)
@@ -49,19 +58,19 @@ func main(){
 				}
 				defer resp.Body.Close()
 				if resp.StatusCode != http.StatusOK {
-					log.Fatalf("Connection failed somewhere idk dont sue me")
+					body, err := io.ReadAll(resp.Body)
+					if err != nil {
+							log.Fatalf("Failed to read response body: %v", err)
+					}
+					log.Fatalf("Unexpected status code: %d, response: %s", resp.StatusCode, body)
 				}
 				paragraph, err := io.ReadAll(resp.Body)
 				if err != nil {
-					log.Fatal(err)
+					log.Fatalf("Failed to read response: %v", err)
 				}
-			  log.Printf("Response: %v", paragraph)
+			  log.Printf("Response: %s", string(paragraph))
 			},
 		}
-// https://api.openai.com/v1/chat/completions
-
-//VARIABLE IS API_KEY
-// Please generate a short 5 sentance paragraph about dinorsaurs.
 
 	rootCmd.AddCommand(cmdGenerate)
 	if err := rootCmd.Execute(); err != nil {
