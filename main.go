@@ -5,7 +5,7 @@ import (
 	// "encoding/json"
 	"fmt"
 	// "io"
-	// "log"
+	"log"
 	// "net/http"
 	"context"
 	"os"
@@ -25,7 +25,11 @@ func main(){
 		Short: "Generate documentation for a given source file",
 		Args: cobra.ExactArgs(1),
 		Run:func(cmd *cobra.Command, args []string) {
-		client := openai.NewClient("")
+			fileContent, err := os.ReadFile(args[0])
+			if err != nil {
+					log.Fatalf("Failed to read file: %v", err)
+			}
+		client := openai.NewClient("") // api key goes here
 		resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -33,7 +37,7 @@ func main(){
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: "Please write a 5 sentace paragraph about ducks.",
+					Content: "Generate documentation for this code: " + string(fileContent),
 				},
 			},
 		},
@@ -47,10 +51,6 @@ func main(){
 	fmt.Println(resp.Choices[0].Message.Content)
 			},
 		}
-// https://api.openai.com/v1/chat/completions
-
-//VARIABLE IS API_KEY
-// Please generate a short 5 sentance paragraph about dinorsaurs.
 
 	rootCmd.AddCommand(cmdGenerate)
 	if err := rootCmd.Execute(); err != nil {
