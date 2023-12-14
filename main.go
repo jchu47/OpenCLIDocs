@@ -14,48 +14,57 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func main(){
-	var rootCmd = &cobra.Command {
-	    Use: "docai",
-			Short: "Documentation Generator",
+func main() {
+	var rootCmd = &cobra.Command{
+		Use:   "docai",
+		Short: "Documentation Generator",
 	}
-
-	var cmdGenerate = &cobra.Command {
-		Use: "generate",
+	var outputFile string
+	var cmdGenerate = &cobra.Command{
+		Use:   "generate",
 		Short: "Generate documentation for a given source file",
-		Args: cobra.ExactArgs(1),
-		Run:func(cmd *cobra.Command, args []string) {
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
 			fileContent, err := os.ReadFile(args[0])
 			if err != nil {
-					log.Fatalf("Failed to read file: %v", err)
+				log.Fatalf("Failed to read file: %v", err)
 			}
-		client := openai.NewClient("") // api key goes here
-		resp, err := client.CreateChatCompletion(
-		context.Background(),
-		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: "Generate documentation for this code: " + string(fileContent),
+			client := openai.NewClient("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") // api key goes here
+			resp, err := client.CreateChatCompletion(
+				context.Background(),
+				openai.ChatCompletionRequest{
+					Model: openai.GPT3Dot5Turbo,
+					Messages: []openai.ChatCompletionMessage{
+						{
+							Role:    openai.ChatMessageRoleUser,
+							Content: "Generate documentation for this code in markdown format: " + string(fileContent),
+						},
+					},
 				},
-			},
-		},
-	)
+			)
 
-	if err != nil {
-		fmt.Printf("ChatCompletion error: %v\n", err)
-		return
+			if err != nil {
+				fmt.Printf("ChatCompletion error: %v\n", err)
+				return
+			}
+
+			if outputFile != "" {
+				err = os.WriteFile(outputFile, []byte(resp.Choices[0].Message.Content), 0644)
+				if err != nil {
+					log.Fatalf("Failed to write to file: %v", err)
+				}
+				fmt.Printf("Documentation written to %s\n", outputFile)
+			} else {
+				fmt.Println(resp.Choices[0].Message.Content)
+			}
+
+		},
 	}
 
-	fmt.Println(resp.Choices[0].Message.Content)
-			},
-		}
-
+	cmdGenerate.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the documentation (Markdown format)")
 	rootCmd.AddCommand(cmdGenerate)
 	if err := rootCmd.Execute(); err != nil {
-	fmt.Println(err)
-	defer os.Exit(1)
+		fmt.Println(err)
+		defer os.Exit(1)
 	}
 }
-
