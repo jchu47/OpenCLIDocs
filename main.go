@@ -29,7 +29,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("Failed to read file: %v", err)
 			}
-			client := openai.NewClient("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") // api key goes here
+			client := openai.NewClient("") // api key goes here
 			resp, err := client.CreateChatCompletion(
 				context.Background(),
 				openai.ChatCompletionRequest{
