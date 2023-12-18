@@ -5,12 +5,23 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
+	"github.com/jchu47/OpenCLIDocs/api"
 	"github.com/sashabaranov/go-openai"
 	"github.com/spf13/cobra"
-	"github.com/jchu47/OpenCLIDocs/api"
 )
+
 var outputFile string
+
+func generateDirectory() error {
+	dirPath := "DocAITest"
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		return os.Mkdir(dirPath, 0755)
+	}
+	return nil
+}
 
 var GenerateCmd = &cobra.Command{
 	Use:   "generate",
@@ -52,16 +63,25 @@ var GenerateCmd = &cobra.Command{
 			return
 		}
 
-		if outputFile != "" {
-			err = os.WriteFile(outputFile, []byte(resp.Choices[0].Message.Content), 0644)
-			if err != nil {
-				log.Fatalf("Failed to write to file: %v", err)
-			}
-			fmt.Printf("Documentation written to %s\n", outputFile)
-		} else {
-			fmt.Println(resp.Choices[0].Message.Content)
+		if outputFile == "" {
+			inputFilePath := args[0]
+			outputFile = strings.TrimSuffix(filepath.Base(inputFilePath), filepath.Ext(inputFilePath)) + ".md"
+		} else if !strings.HasSuffix(outputFile, ".md") {
+			outputFile += ".md"
 		}
 
+		err = generateDirectory()
+		if err != nil {
+			log.Fatalf("Failed to create DocAITest directory: %v", err)
+		}
+
+		fullPath := filepath.Join("DocAITest", outputFile)
+		err = os.WriteFile(fullPath, []byte(resp.Choices[0].Message.Content), 0644)
+		if err != nil {
+			log.Fatalf("Failed to write to file: %v", err)
+		}
+
+		fmt.Printf("Documentation written to %s\n", fullPath)
 	},
 }
 
