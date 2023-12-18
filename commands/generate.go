@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/jchu47/OpenCLIDocs/api"
 )
+var outputFile string
 
 var GenerateCmd = &cobra.Command{
 	Use:   "generate",
@@ -40,7 +41,7 @@ var GenerateCmd = &cobra.Command{
 				Messages: []openai.ChatCompletionMessage{
 					{
 						Role:    openai.ChatMessageRoleUser,
-						Content: "Generate documentation for this code: " + string(fileContent),
+						Content: "Generate documentation for this code in markdown format: " + string(fileContent),
 					},
 				},
 			},
@@ -51,6 +52,19 @@ var GenerateCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(resp.Choices[0].Message.Content)
+		if outputFile != "" {
+			err = os.WriteFile(outputFile, []byte(resp.Choices[0].Message.Content), 0644)
+			if err != nil {
+				log.Fatalf("Failed to write to file: %v", err)
+			}
+			fmt.Printf("Documentation written to %s\n", outputFile)
+		} else {
+			fmt.Println(resp.Choices[0].Message.Content)
+		}
+
 	},
+}
+
+func init() {
+	GenerateCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the documentation (Markdown format)")
 }
