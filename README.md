@@ -9,7 +9,9 @@ OpenCLIDocs is a command-line interface (CLI) tool for generating documentation 
 
 You can download the latest release of the OpenCLIDocs binary from the [Releases](https://github.com/jchu47/OpenCLIDocs/releases) page. Choose the appropriate version for your operating system and architecture.
 
+
 ### Add to PATH
+
 
 1. **Locate the OpenCLIDocs Binary:**
    After downloading the binary, locate the `OpenCLIDocs` executable in the extracted folder.
@@ -26,7 +28,12 @@ After updating your shell profile, restart your terminal or run source ~/.bashrc
 
 Now, you should be able to run OpenCLIDocs generate example.go directly from any directory.
 
+
 ## Usage
+
+
+
+
 
 ### Generate Documentation
 
@@ -47,7 +54,14 @@ The input command allows you to input your OpenAI API key. If the API key is not
 ./OpenCLIDocs input
 ```
 
+
 ### Examples
+
+
+
+
+
+
 Generate Documentation
 
 Generate documentation for a Go source file named example.go:
