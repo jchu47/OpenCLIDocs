@@ -1,15 +1,30 @@
 # OpenCLIDocs
 
-# OpenCLIDocs
-
 OpenCLIDocs is a command-line interface (CLI) tool for generating documentation using the OpenAI GPT-3.5 Turbo model.
+
 
 ## Installation
 
-To use OpenCLIDocs, you need to have [Go](https://golang.org/) installed on your machine. Once Go is installed, you can get the OpenCLIDocs tool using:
+### Binary Download
 
-```bash
-go get github.com/your-username/OpenCLIDocs
+You can download the latest release of the OpenCLIDocs binary from the [Releases](https://github.com/jchu47/OpenCLIDocs/releases) page. Choose the appropriate version for your operating system and architecture.
+
+### Add to PATH
+
+1. **Locate the OpenCLIDocs Binary:**
+   After downloading the binary, locate the `OpenCLIDocs` executable in the extracted folder.
+
+2. **Add to PATH:**
+   Add the directory containing the `OpenCLIDocs` binary to your system's `PATH`. You can do this by adding the following line to your shell profile file (e.g., `~/.bashrc`, `~/.zshrc`, etc.):
+
+   ```bash
+   export PATH=$PATH:/path/to/folder/containing/OpenCLIDocs
+
+Replace /path/to/folder/containing/OpenCLIDocs with the actual path to the directory containing the OpenCLIDocs binary.
+
+After updating your shell profile, restart your terminal or run source ~/.bashrc (or the corresponding command for your shell) to apply the changes.
+
+Now, you should be able to run OpenCLIDocs generate example.go directly from any directory.
 
 Usage
 Generate Documentation
