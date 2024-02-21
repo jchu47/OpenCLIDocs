@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
+	"github.com/jchu47/OpenCLIDocs/api"
 	"github.com/sashabaranov/go-openai"
 	"github.com/spf13/cobra"
-	"github.com/jchu47/OpenCLIDocs/api"
 )
 var outputFile string
 
@@ -17,7 +19,30 @@ var GenerateCmd = &cobra.Command{
 	Short: "Generate documentation for a given source file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fileContent, err := os.ReadFile(args[0])
+		fileName := args[0]
+
+		// Attempt to find the file recursively in all directories
+		filePath, err := findFileRecursive(".", fileName)
+		if err != nil {
+			log.Fatalf("Failed to find file: %v", err)
+		}
+
+		// Extract the base name of the input file without extension
+		baseName := strings.TrimSuffix(filepath.Base(filePath), filepath.Ext(filePath))
+
+		// Check if "documentation" folder exists, create it if not
+		docFolder := "documentation"
+		if _, err := os.Stat(docFolder); os.IsNotExist(err) {
+			err := os.Mkdir(docFolder, 0755)
+			if err != nil {
+				log.Fatalf("Failed to create %s folder: %v", docFolder, err)
+			}
+		}
+
+		// Construct the output file path within the "documentation" folder with a .md extension
+		outputFile = filepath.Join(docFolder, baseName+".md")
+
+		fileContent, err := os.ReadFile(filePath)
 		if err != nil {
 			log.Fatalf("Failed to read file: %v", err)
 		}
@@ -52,19 +77,41 @@ var GenerateCmd = &cobra.Command{
 			return
 		}
 
-		if outputFile != "" {
-			err = os.WriteFile(outputFile, []byte(resp.Choices[0].Message.Content), 0644)
-			if err != nil {
-				log.Fatalf("Failed to write to file: %v", err)
-			}
-			fmt.Printf("Documentation written to %s\n", outputFile)
-		} else {
-			fmt.Println(resp.Choices[0].Message.Content)
+		// Write the documentation to the output file
+		err = os.WriteFile(outputFile, []byte(resp.Choices[0].Message.Content), 0644)
+		if err != nil {
+			log.Fatalf("Failed to write to file: %v", err)
 		}
-
+		fmt.Printf("Documentation written to %s\n", outputFile)
 	},
+
 }
 
 func init() {
 	GenerateCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the documentation (Markdown format)")
+}
+
+func findFileRecursive(dir, fileName string) (string, error) {
+	filePath := filepath.Join(dir, fileName)
+	if _, err := os.Stat(filePath); err == nil {
+		return filePath, nil
+	}
+
+	// Recursively search in subdirectories
+	subdirs, err := os.ReadDir(dir)
+	if err != nil {
+		return "", err
+	}
+
+	for _, subdir := range subdirs {
+		if subdir.IsDir() {
+			subdirPath := filepath.Join(dir, subdir.Name())
+			foundPath, err := findFileRecursive(subdirPath, fileName)
+			if err == nil {
+				return foundPath, nil
+			}
+		}
+	}
+
+	return "", fmt.Errorf("file not found: %s", fileName)
 }
