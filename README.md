@@ -26,26 +26,26 @@ After updating your shell profile, restart your terminal or run source ~/.bashrc
 
 Now, you should be able to run OpenCLIDocs generate example.go directly from any directory.
 
-Usage
-Generate Documentation
+## Usage
 
-The generate command is used to generate documentation for a given source file. By default, it looks for the source file in the current directory and its subdirectories.
+### Generate Documentation
 
-bash
+The `generate` command is used to generate documentation for a given source file. By default, it looks for the source file in the current directory and its subdirectories.
 
+```bash
 ./OpenCLIDocs generate path/to/your/source/file.go
 
 You can specify the output file using the -o or --output flag. The generated documentation will be written to the specified Markdown file.
 
-bash
 
 ./OpenCLIDocs generate path/to/your/source/file.go --output path/to/output/file.md
+
 
 Input OpenAI API Key
 
 The input command allows you to input your OpenAI API key. If the API key is not set, it prompts you to enter the key interactively.
 
-bash
+
 
 ./OpenCLIDocs input
 
@@ -73,7 +73,7 @@ bash
 ./OpenCLIDocs input
 
 
-
+Contributions
 Contributions are welcome! If you find any issues or have suggestions, please open an issue or submit a pull request.
 License
 
