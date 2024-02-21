@@ -34,43 +34,43 @@ The `generate` command is used to generate documentation for a given source file
 
 ```bash
 ./OpenCLIDocs generate path/to/your/source/file.go
-
+```
 You can specify the output file using the -o or --output flag. The generated documentation will be written to the specified Markdown file.
-
-
+```bash
 ./OpenCLIDocs generate path/to/your/source/file.go --output path/to/output/file.md
+```
 
-
-Input OpenAI API Key
+### Input OpenAI API Key
 
 The input command allows you to input your OpenAI API key. If the API key is not set, it prompts you to enter the key interactively.
-
-
-
+```bash
 ./OpenCLIDocs input
+```
 
-Examples
+### Examples
 Generate Documentation
 
 Generate documentation for a Go source file named example.go:
 
-bash
+Input OpenAI API Key (optional)
 
+Skip to input your OpenAI API key interactively:
+
+```bash
+
+./OpenCLIDocs input
+```
+
+```bash
 ./OpenCLIDocs generate example.go
+```
 
 Generate documentation and save it to a specific Markdown file:
 
-bash
+``` bash
 
-./OpenCLIDocs generate example.go --output example.md
-
-Input OpenAI API Key
-
-Input your OpenAI API key interactively:
-
-bash
-
-./OpenCLIDocs input
+./OpenCLIDocs generate example.go -o different_example.md
+```
 
 
 Contributions
