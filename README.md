@@ -10,7 +10,7 @@ To use OpenCLIDocs, you need to have [Go](https://golang.org/) installed on your
 go get github.com/your-username/OpenCLIDocs
 
 
-## Usage
+# Usage
 Generate Documentation
 
 The generate command is used to generate documentation for a given source file. By default, it looks for the source file in the current directory and its subdirectories.
@@ -25,6 +25,9 @@ bash
 
 ./OpenCLIDocs generate path/to/your/source/file.go --output path/to/output/file.md
 
+
+
+
 Input OpenAI API Key
 
 The input command allows you to input your OpenAI API key. If the API key is not set, it prompts you to enter the key interactively.
@@ -33,7 +36,11 @@ bash
 
 ./OpenCLIDocs input
 
-## Examples
+
+
+
+
+# Examples
 Generate Documentation
 
 Generate documentation for a Go source file named example.go:
