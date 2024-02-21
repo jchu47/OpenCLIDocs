@@ -1,7 +1,5 @@
 # OpenCLIDocs
 
-# OpenCLIDocs
-
 OpenCLIDocs is a command-line interface (CLI) tool for generating documentation using the OpenAI GPT-3.5 Turbo model.
 
 ## Installation
@@ -11,7 +9,8 @@ To use OpenCLIDocs, you need to have [Go](https://golang.org/) installed on your
 ```bash
 go get github.com/your-username/OpenCLIDocs
 
-Usage
+
+## Usage
 Generate Documentation
 
 The generate command is used to generate documentation for a given source file. By default, it looks for the source file in the current directory and its subdirectories.
@@ -34,7 +33,7 @@ bash
 
 ./OpenCLIDocs input
 
-Examples
+## Examples
 Generate Documentation
 
 Generate documentation for a Go source file named example.go:
